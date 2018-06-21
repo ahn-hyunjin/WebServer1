@@ -1,0 +1,162 @@
+logout
+
+<?
+session_start();
+	$_SESSION['userid'] = $row[id];
+	$_SESSION['username'] = $row[name];
+	$_SESSION['usernick'] = $row[nick];
+	$_SESSION['hp'] = $row[mphone];
+	$_SESSION['e-mail'] = $row[email];
+	$_SESSION['regist_day'] = $row[regist_day];
+echo("<script>window.alert('잘가세요~');location.href='../index.php';</script>");
+?>
+
+
+=============
+
+login
+
+<?php 
+session_start();
+
+include "./dbconn.php";
+
+$sql = "select * from member where id='".$_GET['userid']."'";
+$result = mysql_query($sql, $connect);
+$num_match =mysql_num_rows($result);
+if(!$num_match){
+	echo("<script>window.alert('입력 정보가 틀렸습니다.');history.go(-1);</script>"); 
+	mysql_close();
+}else{
+	$row = mysql_fetch_array($result);
+	mysql_close();
+	$db_pass = $row[pass];
+
+	if($_GET['passwd']!=$db_pass){
+		echo("<script>window.alert('입력 정보가 틀렸습니다.');history.go(-1);</script>");exit;}
+
+	$_SESSION['userid'] = $row[id];
+	$_SESSION['username'] = $row[name];
+	$_SESSION['usernick'] = $row[nick];
+	$_SESSION['hp'] = $row[mphone];
+	$_SESSION['e-mail'] = $row[email];
+	$_SESSION['regist_day'] = $row[regist_day];
+	echo("<script>window.alert('로그인 성공');location.href='../index.php';</script>");
+}
+?>
+
+=======================
+
+login.form
+
+<?php include "../header.php"?>
+
+<div id="sub_img_login"></div>
+<article id="login_art">
+<h1>Login</h1>
+<div class="login_box">
+	<form name="login_form" method="get" action="./login.php">
+		<label>아이디</label>
+		<input type="text" name="userid">
+		<div class="clear"></div>
+		<label>패스워드</label>
+		<input type="password" name="passwd">
+		<div class="clear"></div>
+		<span class="btn"><input type="submit" value="로그인 하기"></span>
+	</form>
+</div>
+</article>
+
+<?php include "../footer.php";?>
+
+
+=================
+
+dbconn
+
+<?php 
+	$connect = mysql_connect("localhost", "careadmin", "hackers") or die("SQL Server 연결 실패!");
+	
+	mysql_select_db("care_db", $connect);
+?>
+
+==============
+
+member_insert
+
+<?php
+include "../login/dbconn.php";
+
+if(!$_GET['id']||!$_GET['passwd']){echo("<script>window.alert('아이디와 패스워드를 모두 입력해야 합니다.');history.go(-1);</script>");exit;}
+
+if($_GET['passwd']!=$_GET['pass_confirm']){echo("<script>window.alert('패스워드를 확인 하세요.');history.go(-1);</script>");exit;}
+
+$regist_day = date("Y-m-d (H:i)");
+
+$sql = "insert into member (id,pass,name,nick,mphone,email,"; $sql .= "regist_day) values ('".$_GET['id']."','".$_GET['passwd']."','".$_GET['name']."','".$_GET['nick']."','".$_GET['hp']."','".$_GET['e-mail']."','$regist_day')";
+
+mysql_query($sql, $connect);
+mysql_close();
+echo "<script>window.alert('가입완료');location.href='../index.php';</script>";
+
+?>
+
+=============
+
+join
+
+<? include "../header.php";?>
+<? include "sub_img.php";?>
+<? include "sub_menu.php";?>
+
+<article>
+<h1>Join Us</h1>
+<form id="join" method="get" action="./member_insert.php">
+	<fieldset>
+		<legend>Basic Info</legend>
+		<label>User ID</label>
+		<input name="id" type="text" class="id">
+		<div class="clear"></div>
+   	<label>Passwd</label>
+		<input name="passwd" type="password" class="pass">
+		<div class="clear"></div>
+   	<label>Confirm Passwd</label>
+		<input name="pass_confirm" type="password" class="pass">
+		<div class="clear"></div>
+   	<label>Name</label>
+		<input name="name" type="text" class="nick">
+		<div class="clear"></div>
+   	<label>Nickname</label>
+		<input name="nick" type="text" class="nick">
+		<div class="clear"></div>
+   	<label>Mobile Phone Number</label>
+		<input name="hp" type="tel" class="mobile">
+		<div class="clear"></div>
+   	<label>E-Mail</label>
+		<input name="e-mail" type="email" class="email">
+		<div class="clear"></div>
+	</fieldset>
+
+	<div id="buttons">
+		<input type="submit" value="Sumit" class="submit">
+		<input type="button" value="Cancel" class="cancel"
+onClick="javascript:location.href='../index.php';">
+</form>
+</article>
+
+<? include "../footer.php";?>
+
+==============
+
+memberinsert.php
+
+if($exist_id){
+	echo("<script>window.alert(해당아이디가존재합니다.);history.go(-1);<script>);exit;
+}else
+$sql = "insert into member (id,pass,name,nick,mphone,email,";)"
+$sql .="regist_day) values ('".$_GET['id']."','".&_GET['passwd']."','".$_GET['e-mail']."','"$regist_day')";
+
+mysql_query(&sql, $connect);
+
+mysql_close();
+echo 
